@@ -5,9 +5,9 @@ require 'mechanize'
 
 class KaistMail
 	def self.login(user_id,user_passwd)
-	@a = Mechanize.new
-	@r = @a.get('http://mail.kaist.ac.kr').frame('main').click
-	@r2 = @r.form('login') do |f|
+	a = Mechanize.new
+	r = @a.get('http://mail.kaist.ac.kr').frame('main').click
+	@r2 = r.form('login') do |f|
 		f.USERS_ID = user_id
 		f.USERS_PASSWD = user_passwd
 		f.action = "https://mail.kaist.ac.kr/nara/servlet/user.UserServ"
@@ -29,14 +29,14 @@ class KaistMail
 	end
 	
 	def self.sendmsg(user_id,user_passwd,sender_hp,receiver_hp,message)
-	@t = self.login(user_id,user_passwd)
-	@t2 = @t.link(:text => "SMS").click
-	@t3 = @t2.form('f') do |v|
+	t = self.login(user_id,user_passwd)
+	t2 = t.link(:text => "SMS").click
+	t3 = t2.form('f') do |v|
 		v.sendHp = sender_hp
 		v.receiveHp = receiver_hp
 		v.toMessage = message
 	end.submit
-	if(@t3.body.scan("img sms result.gif").size)
+	if(t3.body.scan("img sms result.gif").size)
 		return true
 	else
 		return false
