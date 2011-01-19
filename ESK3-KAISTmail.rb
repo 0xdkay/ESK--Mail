@@ -13,16 +13,17 @@ class KaistMail
 		f.action = "https://mail.kaist.ac.kr/nara/servlet/user.UserServ"
 		f.cmd = 'login'
 	end.submit
-	puts "login success"
+	if self.login?
 	return @r2
+	else
+	return false
+	end
 	end
 
 	def self.login?
 	if(@r2.body.scan('logout').size)
-		puts "Login Success."
 		return true
 	else
-		puts "Login failed."
 		return false
 	end
 	end
@@ -36,10 +37,8 @@ class KaistMail
 		v.toMessage = message
 	end.submit
 	if(@t3.body.scan("img sms result.gif").size)
-		puts "Success!! Message was sent."
 		return true
 	else
-		puts "Fail.. Nah......."
 		return false
 	end	
 	end
