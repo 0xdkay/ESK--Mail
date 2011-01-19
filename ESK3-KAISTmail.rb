@@ -86,5 +86,5 @@ if __FILE__ = $0
 			  checker = gets.chomp
 		end
 		break if not checker == "y"
-	end	
+	end	
 end
