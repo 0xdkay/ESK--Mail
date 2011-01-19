@@ -5,42 +5,46 @@ require 'mechanize'
 
 class KaistMail
 	def self.login(user_id,user_passwd)
-	a = Mechanize.new
-	r = a.get('http://mail.kaist.ac.kr').frame('main').click
-	@r2 = r.form('login') do |f|
-		f.USERS_ID = user_id
-		f.USERS_PASSWD = user_passwd
-		f.action = "https://mail.kaist.ac.kr/nara/servlet/user.UserServ"
-		f.cmd = 'login'
-	end.submit
-	if self.login?
-		return @r2
-	else
-		return false
-	end
+		a = Mechanize.new
+		r = a.get('http://mail.kaist.ac.kr').frame('main').click
+		@r2 = r.form('login') do |f|
+			f.USERS_ID = user_id
+			f.USERS_PASSWD = user_passwd
+			f.action = "https://mail.kaist.ac.kr/nara/servlet/user.UserServ"
+			f.cmd = 'login'
+		end.submit
+		if self.login?
+			return @r2
+		else
+			return false
+		end
 	end
 
 	def self.login?
-	if(@r2.body.scan('logout').size)
-		return true
-	else
-		return false
-	end
+		if not @r2 =~ /logout/
+			return true
+		else
+			return false
+		end
 	end
 	
 	def self.sendsms(user_id,user_passwd,sender_hp,receiver_hp,message)
-	t = self.login(user_id,user_passwd)
-	t2 = t.link(:text => "SMS").click
-	t3 = t2.form('f') do |v|
-		v.sendHp = sender_hp
-		v.receiveHp = receiver_hp
-		v.toMessage = message
-	end.submit
-	if(t3.body.scan("img sms result.gif").size)
-		return true
-	else
-		return false
-	end	
+		t = self.login(user_id,user_passwd)
+		t2 = t.link(:text => "SMS").click
+		t3 = t2.form('f') do |v|
+			if v.quota.to_i <= 0
+					"There are no free sms left."
+					return false
+			end
+			v.sendHp = sender_hp
+			v.receiveHp = receiver_hp
+			v.toMessage = message
+		end.submit
+		if t3.body =~ /img sms result\.gif/
+			return true
+		else
+			return false
+		end	
 	end
 end
 
@@ -89,7 +93,7 @@ if __FILE__ == $0
 	end	
 end
 
-if (KaistMail.sendsms(userid,userpasswd,senderhp,receiverhp,s_context))
+if KaistMail.sendsms(userid,userpasswd,senderhp,receiverhp,s_context)
 	puts "Sending SMS Success!"
 else
 	puts "Fail!"
