@@ -73,12 +73,10 @@ end
 receiverhp = []
 i=1
 loop do
-	print "Enter receiver \##{i}'s phonenumber: "
-	tmp = gets.chomp
-	while not tmp =~ /\A\d+\z/
-		   print "Please input proper number: "
-		   tmp = gets.chomp
-	end
+  print "Enter receiver \##{i}'s phonenumber: "
+  tmp = gets.chomp
+  retry if not tmp =~ /\A\d+\z/
+
 	receiverhp.push(tmp)
 	print "Do you want add more receiver?(y/n)"
 	checker = gets.chomp
