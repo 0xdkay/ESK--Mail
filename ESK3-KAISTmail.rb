@@ -47,51 +47,56 @@ end
 
 
 #----------------------main--------------------------
+if __FILE__ = $0
 
-print "Enter your e-mail id: "
-userid = gets.chomp
+	print "Enter your e-mail id: "
+	userid = gets.chomp
 
-print "Enter your e-mail password: "
-userpasswd = gets.chomp
+	print "Enter your e-mail password: "
+	userpasswd = gets.chomp
 
-print "Enter the context: "
-s_context = gets.chomp.encode("UTF-8")
-while(s_context.size > 80)
-	puts "The context should be less than 80 words."
 	print "Enter the context: "
 	s_context = gets.chomp.encode("UTF-8")
-end
+	while(s_context.size > 80)
+		puts "The context should be less than 80 words."
+		print "Enter the context: "
+		s_context = gets.chomp.encode("UTF-8")
+	end
 
 
-print "Enter sender phonenumber: "
-senderhp = gets.chomp
-while(senderhp.scan(/\d/).size != senderhp.size)
-      print "Please input proper number: "
+	print "Enter sender phonenumber: "
 	senderhp = gets.chomp
+	while(senderhp.scan(/\d/).size != senderhp.size)
+	      print "Please input proper number: "
+		senderhp = gets.chomp
+	end
+
+	receiverhp = []
+	i=1
+	loop do
+		tmp = "aa"
+		print "Enter receiver \##{i}'s phonenumber: "
+		tmp = gets.chomp
+		while(tmp.scan(/\d/).size != tmp.size)
+			   print "Please input proper number: "
+			   tmp = gets.chomp
+		end
+		receiverhp.push(tmp)
+		print "Do you want add more receiver?(y/n)"
+		checker = gets.chomp
+		while (checker != "y" && checker != "n")
+			  print "Select \"y\" or \"n\"."
+			  checker = gets.chomp
+		end
+		if checker == "y"
+			i+=1
+		else
+			break
+		end
+	end
+
+	KaistMail.sendmsg(userid,userpasswd,senderhp,receiverhp,s_context)
+
+
 end
 
-receiverhp = []
-i=1
-loop do
-	tmp = "aa"
-	print "Enter receiver \##{i}'s phonenumber: "
-	tmp = gets.chomp
-	while(tmp.scan(/\d/).size != tmp.size)
-		   print "Please input proper number: "
-		   tmp = gets.chomp
-	end
-	receiverhp.push(tmp)
-	print "Do you want add more receiver?(y/n)"
-	checker = gets.chomp
-	while (checker != "y" && checker != "n")
-		  print "Select \"y\" or \"n\"."
-		  checker = gets.chomp
-	end
-	if checker == "y"
-		i+=1
-	else
-		break
-	end
-end
-
-KaistMail.sendmsg(userid,userpasswd,senderhp,receiverhp,s_context)
