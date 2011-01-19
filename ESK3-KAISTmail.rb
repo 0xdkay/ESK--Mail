@@ -4,7 +4,7 @@ require 'mechanize'
 
 
 class KaistMail
-	def self.login(user_id,user_passwd)
+	def login(user_id,user_passwd)
 		a = Mechanize.new
 		r = a.get('http://mail.kaist.ac.kr').frame('main').click
 		@r2 = r.form('login') do |f|
@@ -20,7 +20,7 @@ class KaistMail
 		end
 	end
 
-	def self.login?
+	def login?
 		if not @r2 =~ /logout/
 			return true
 		else
@@ -29,22 +29,24 @@ class KaistMail
 	end
 	
 	def self.sendsms(user_id,user_passwd,sender_hp,receiver_hp,message)
-		t = self.login(user_id,user_passwd)
+		a = self.new
+		t = a.login(user_id,user_passwd)
 		t2 = t.link(:text => "SMS").click
 		t3 = t2.form('f') do |v|
 			if v.quota.to_i <= 0
-					"There are no free sms left."
+					puts "There are no free sms left."
 					return false
 			end
 			v.sendHp = sender_hp
 			v.receiveHp = receiver_hp
 			v.toMessage = message
 		end.submit
-		if t3.body =~ /img sms result\.gif/
+		t4 = t3.search('//span[@class="t_menu_vioB"]/node()').map(&:to_s).map(&:to_i)
+		if t4[0] == t4[1] && t4[0] != 0 && t4[3] == 0 && t4[4] == 0
 			return true
 		else
 			return false
-		end	
+		end		
 	end
 end
 
@@ -86,17 +88,13 @@ if __FILE__ == $0
 		print "Do you want add more receiver?(y/n)"
 		checker = gets.chomp
 		while (checker != "y" && checker != "n")
-			print "Select \"y\" or \"n\"."
+			print "Select \"y\" or \"n\": "
 			checker = gets.chomp
 		end
 		break if not checker == "y"
 	end	
 end
 
-if KaistMail.sendsms(userid,userpasswd,senderhp,receiverhp,s_context)
-	puts "Sending SMS Success!"
-else
-	puts "Fail!"
-end
 
+puts KaistMail.sendsms(userid,userpasswd,senderhp,receiverhp,s_context)
 
