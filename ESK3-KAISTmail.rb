@@ -65,8 +65,8 @@ if __FILE__ = $0
 
 	print "Enter sender phonenumber: "
 	senderhp = gets.chomp
-	while(senderhp.scan(/\d/).size != senderhp.size)
-	      print "Please input proper number: "
+	while senderhp =~ /\A\d+\z/
+		print "Please input proper number: "
 		senderhp = gets.chomp
 	end
 
