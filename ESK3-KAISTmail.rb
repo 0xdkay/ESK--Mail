@@ -71,15 +71,13 @@ if __FILE__ = $0
 	end
 
 	receiverhp = []
-	i=1
+	i=0
 	loop do
-		tmp = "aa"
-		print "Enter receiver \##{i}'s phonenumber: "
-		tmp = gets.chomp
-		while(tmp.scan(/\d/).size != tmp.size)
-			   print "Please input proper number: "
-			   tmp = gets.chomp
-		end
+	  i += 1
+	  print "Enter receiver \##{i}'s phonenumber: "
+	  tmp = gets.chomp
+	  retry if not tmp =~ /\A\d+\z/
+	
 		receiverhp.push(tmp)
 		print "Do you want add more receiver?(y/n)"
 		checker = gets.chomp
@@ -87,15 +85,6 @@ if __FILE__ = $0
 			  print "Select \"y\" or \"n\"."
 			  checker = gets.chomp
 		end
-		if checker == "y"
-			i+=1
-		else
-			break
-		end
-	end
-
-	KaistMail.sendmsg(userid,userpasswd,senderhp,receiverhp,s_context)
-
-
+		break if not checker == "y"
+	end	
 end
-
