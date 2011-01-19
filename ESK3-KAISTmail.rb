@@ -71,8 +71,9 @@ while(senderhp.scan(/\d/).size != senderhp.size)
 end
 
 receiverhp = []
-i=1
+i=0
 loop do
+  i += 1
   print "Enter receiver \##{i}'s phonenumber: "
   tmp = gets.chomp
   retry if not tmp =~ /\A\d+\z/
@@ -84,11 +85,7 @@ loop do
 		  print "Select \"y\" or \"n\"."
 		  checker = gets.chomp
 	end
-	if checker == "y"
-		i+=1
-	else
-		break
-	end
+	break if not checker == "y"
 end
 
 KaistMail.sendmsg(userid,userpasswd,senderhp,receiverhp,s_context)
