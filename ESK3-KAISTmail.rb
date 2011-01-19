@@ -38,11 +38,7 @@ class KaistMail
 			v.toMessage = message
 		end.submit
 		t4 = t3.search('//span[@class="t_menu_vioB"]/node()').map(&:to_s).map(&:to_i)
-		if t4[0] == t4[1] && t4[0] != 0 && t4[3] == 0 && t4[4] == 0
-			return true
-		else
-			return false
-		end		
+		return t4[0] == t4[1] && t4[0] != 0 && t4[3] == 0 && t4[4] == 0
 	end
 end
 
