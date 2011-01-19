@@ -73,10 +73,9 @@ end
 receiverhp = []
 i=1
 loop do
-	tmp = "aa"
 	print "Enter receiver \##{i}'s phonenumber: "
 	tmp = gets.chomp
-	while(tmp.scan(/\d/).size != tmp.size)
+	while not tmp =~ /\A\d+\z/
 		   print "Please input proper number: "
 		   tmp = gets.chomp
 	end
