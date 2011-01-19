@@ -21,11 +21,7 @@ class KaistMail
 	end
 
 	def login?
-		if not @r2 =~ /logout/
-			return true
-		else
-			return false
-		end
+		return @r2 !~ /logout/
 	end
 	
 	def self.sendsms(user_id,user_passwd,sender_hp,receiver_hp,message)
