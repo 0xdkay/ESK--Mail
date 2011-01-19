@@ -72,7 +72,7 @@ end
 
 receiverhp = []
 i=1
-while(1)
+loop do
 	tmp = "aa"
 	print "Enter receiver \##{i}'s phonenumber: "
 	tmp = gets.chomp
