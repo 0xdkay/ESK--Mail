@@ -25,7 +25,7 @@ class KaistMail
 	end
 
 	def sendsms(sender_hp,receiver_hp,message)
-		t2 = @r2
+		t2 = @r2.link(:text => "SMS").click
 		t3 = t2.form('f') do |v|
 			if v.quota.to_i <= 0
 					puts "There are no free sms left."

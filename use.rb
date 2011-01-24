@@ -4,26 +4,13 @@ require "ESK3-KAISTmail"
 require "yaml"
 require "csv"
 
-a = open(Dir.home+"/mine") {|v| YAML.load(v)}
-=begin
-
+a = open(Dir.home+"/mine") {|v| YAML.load(v.read)}
 b = KaistMail.new
-b.login(a['id'],a['pw'])
-puts b.login?
-=end
+b.login(a[:id],a[:pw])
 
-senderhp = a['sender']
+senderhp = a[:sender]
 
 receiverhp = []
-rclist = CSV.readlines(File.join(Dir.home,"list.csv")).map{|v| v.map {|j| j && j.force_encoding("EUC-KR")}}
-
-loop do
-	print "Enter your receiver: "
-	c = gets.chomp
-	break if c.empty?
-	c = /^#{c}/
-	puts receiverhp.push(*rclist.select {|v| v[0] =~ c}.map {|v| v[1]}.compact)
-end
 
 print "Enter the context: "
 s_context = gets.chomp.encode("UTF-8")
@@ -33,24 +20,29 @@ while (s_context.size > 80)
 	s_context = gets.chomp.encode("UTF-8")
 end
 
-=begin
-receiverhp = []
 i=1
 loop do
 	print "Enter receiver \##{i}'s phonenumber: "
 	tmp = gets.chomp
-	redo if not tmp =~ /\A\d+\z/
-	i+=1
+	
+	break if tmp.empty?
+	i += 1
 
-	receiverhp.push(tmp)
-	print "Do you want add more receiver?(y/n)"
-	checker = gets.chomp
-	while (checker != "y" && checker != "n")
-		print "Select \"y\" or \"n\": "
-		checker = gets.chomp
+	rclist = CSV.readlines(File.join(Dir.home,"list.csv")).map{|v| v.map {|j| j && j.force_encoding("EUC-KR")}}
+	c = /^#{tmp}/
+	tt = rclist.select {|v| v[0] =~ c}.map {|v| v[1]}.compact
+	
+	if tt.empty?	
+		redo if not tmp =~ /\A\d+\z/
+		receiverhp.push(tmp)
+		puts "To #{tmp}"
+	else
+		receiverhp.push(*tt)
+		puts "To #{tt.join(' ')}"
 	end
-
-	break if not checker == "y"
 end
-=end
-b.sendsms(senderhp,receiverhp,message)
+if b.sendsms(senderhp,receiverhp,s_context)
+	puts "Sending Success!!"
+else
+	puts "You Fail!"
+end
