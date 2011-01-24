@@ -23,11 +23,9 @@ class KaistMail
 	def login?
 		return @r2 !~ /logout/
 	end
-	
-	def self.sendsms(user_id,user_passwd,sender_hp,receiver_hp,message)
-		a = self.new
-		t = a.login(user_id,user_passwd)
-		t2 = t.link(:text => "SMS").click
+
+	def sendsms(sender_hp,receiver_hp,message)
+		t2 = @r2
 		t3 = t2.form('f') do |v|
 			if v.quota.to_i <= 0
 					puts "There are no free sms left."
@@ -39,6 +37,15 @@ class KaistMail
 		end.submit
 		t4 = t3.search('//span[@class="t_menu_vioB"]/node()').map(&:to_s).map(&:to_i)
 		return t4[0] == t4[1] && t4[0] != 0 && t4[3] == 0 && t4[4] == 0
+	end
+
+	def self.sendsms(user_id,user_passwd,sender_hp,receiver_hp,message)
+		a = self.new
+		a.login(user_id,user_passwd)
+		if a.login?
+			return a.sendsms(sender_hp,receiver_hp,message)
+		else
+			return false
 	end
 end
 
