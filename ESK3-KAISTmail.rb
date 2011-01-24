@@ -46,6 +46,7 @@ class KaistMail
 			return a.sendsms(sender_hp,receiver_hp,message)
 		else
 			return false
+		end
 	end
 end
 
@@ -59,6 +60,9 @@ if __FILE__ == $0
 	print "Enter your e-mail password: "
 	userpasswd = gets.chomp
 
+	a = KaistMail.new
+	a.login(userid,userpasswd)
+
 	print "Enter the context: "
 	s_context = gets.chomp.encode("UTF-8")
 	while (s_context.size > 80)
@@ -66,7 +70,6 @@ if __FILE__ == $0
 		print "Enter the context: "
 		s_context = gets.chomp.encode("UTF-8")
 	end
-
 
 	print "Enter sender phonenumber: "
 	senderhp = gets.chomp
@@ -91,9 +94,10 @@ if __FILE__ == $0
 			checker = gets.chomp
 		end
 		break if not checker == "y"
+
+	a.sendsms(senderhp,receiverhp,message)
+
 	end	
 end
 
-
-puts KaistMail.sendsms(userid,userpasswd,senderhp,receiverhp,s_context)
 
